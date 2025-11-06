@@ -1,0 +1,84 @@
+#include<iostream>
+#include<stdlib.h>
+#include<ctime>
+#include<string.h>
+using namespace std;
+
+struct Student{
+    int id;
+    char name[30];
+    float cgpa;
+}*s;
+
+int n;
+
+void getdata(){
+    cout<<"\nEnter total number of students: ";
+    cin>>n;
+    s=(struct Student *)malloc(n*sizeof(struct Student));
+    for(int i=0; i<n; i++){
+        cout<<"\nEnter ID, Name, Cgpa: ";
+        cin>>s[i].id>>s[i].name>>s[i].cgpa;
+    }
+}
+
+void display(){
+    cout<<"\nID\tName\tCgpa";
+    for(int i=0;i<n;i++){
+        cout<<"\n"<<s[i].id<<"\t"<<s[i].name<<"\t"<<s[i].cgpa;
+    }
+}
+void linear(int keyid){
+    int i;
+    for(i=0;i<n;i++){
+        if(keyid==s[i].id){
+            cout<<"\nStudent record found";
+            cout<<"\n"<<s[i].id<<"\t"<<s[i].name<<"\t"<<s[i].cgpa;
+            break;
+        }
+    }
+    if(i==n){
+        cout<<"\nStudent record not found";
+    }
+}
+
+void expand(){
+    s=(struct Student *)realloc(s,(n+1)*sizeof(Student));
+    cout<<"Enter id, name, cgpa: ";
+    cin>>s[n].id>>s[n].name>>s[n].cgpa;
+    n++;
+    cout<<"Record added...";
+}
+int main(){
+    int choice, keyid;
+    do{
+        cout<<"\n\nMenu:";
+        cout<<"\n1. Enter Data";
+        cout<<"\n2. Display Data";
+        cout<<"\n3. Linear Search";
+       
+        cout<<"\n4. Expand Record";
+       
+        cout<<"\n5. Exit";
+        cout<<"\nEnter your choice: ";
+        cin>>choice;
+
+        switch(choice){
+            case 1: getdata(); break;
+            case 2: display(); break;
+            case 3:
+                cout<<"Enter ID to search (Linear): ";
+                cin>>keyid;
+                linear(keyid);
+                break;
+           
+            case 4: expand(); break;
+           
+            case 5: cout<<"Exiting..."; break;
+            default: cout<<"Invalid choice!";
+        }
+    } while(choice != 5);
+
+    free(s);
+    return 0;
+}
