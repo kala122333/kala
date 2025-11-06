@@ -1,0 +1,72 @@
+#include<iostream>
+#include<stdlib.h>
+#include<ctime>
+#include<string.h>
+using namespace std;
+
+struct Student{
+    int id;
+    char name[30];
+    float cgpa;
+}*s;
+
+int n;
+
+void getdata(){
+    cout<<"\nEnter total number of students: ";
+    cin>>n;
+    s=(struct Student *)malloc(n*sizeof(struct Student));
+    for(int i=0; i<n; i++){
+        cout<<"\nEnter ID, Name, Cgpa: ";
+        cin>>s[i].id>>s[i].name>>s[i].cgpa;
+    }
+}
+
+void display(){
+    cout<<"\nID\tName\tCgpa";
+    for(int i=0;i<n;i++){
+        cout<<"\n"<<s[i].id<<"\t"<<s[i].name<<"\t"<<s[i].cgpa;
+    }
+}
+
+
+void insertion(){
+    struct Student temp;
+    for(int i=1;i<n;i++){
+        temp=s[i];
+        int j=i-1;
+        while(j>=0 && s[j].cgpa>temp.cgpa){
+            s[j+1]=s[j];
+            j=j-1;
+        }
+        s[j+1]=temp;
+    }
+    cout<<"\nRecord sorted by CGPA (Insertion Sort):";
+    display();
+}
+
+int main(){
+    int choice, keyid;
+    do{
+        cout<<"\n\nMenu:";
+        cout<<"\n1. Enter Data";
+        cout<<"\n2. Display Data";
+     
+        cout<<"\n3. Insertion Sort (by CGPA)";
+        cout<<"\n4. Exit";
+        cout<<"\nEnter your choice: ";
+        cin>>choice;
+
+        switch(choice){
+            case 1: getdata(); break;
+            case 2: display(); break;
+          
+            case 3: insertion(); break;
+            case 4: cout<<"Exiting..."; break;
+            default: cout<<"Invalid choice!";
+        }
+    } while(choice != 4);
+
+    free(s);
+    return 0;
+}
