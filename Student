@@ -1,0 +1,167 @@
+#include<iostream>
+#include<stdlib.h>
+#include<ctime>
+#include<string.h>
+using namespace std;
+
+struct Student{
+    int id;
+    char name[30];
+    float cgpa;
+}*s;
+
+int n;
+
+void getdata(){
+    cout<<"\nEnter total number of students: ";
+    cin>>n;
+    s=(struct Student *)malloc(n*sizeof(struct Student));
+    for(int i=0; i<n; i++){
+        cout<<"\nEnter ID, Name, Cgpa: ";
+        cin>>s[i].id>>s[i].name>>s[i].cgpa;
+    }
+}
+
+void display(){
+    cout<<"\nID\tName\tCgpa";
+    for(int i=0;i<n;i++){
+        cout<<"\n"<<s[i].id<<"\t"<<s[i].name<<"\t"<<s[i].cgpa;
+    }
+}
+
+void linear(int keyid){
+    int i;
+    for(i=0;i<n;i++){
+        if(keyid==s[i].id){
+            cout<<"\nStudent record found";
+            cout<<"\n"<<s[i].id<<"\t"<<s[i].name<<"\t"<<s[i].cgpa;
+            break;
+        }
+    }
+    if(i==n){
+        cout<<"\nStudent record not found";
+    }
+}
+
+void binary(int keyid){
+    int left=0, right=n-1;
+    int flag=0, mid;
+    while(left<=right){
+        mid=(left+right)/2;
+        if(keyid==s[mid].id){
+            flag=1;
+            break;
+        }
+        else if(keyid<s[mid].id){
+            right=mid-1;
+        }
+        else{
+            left=mid+1;
+        }
+    }
+    if(flag==1){
+        cout<<"\nStudent record found";
+        cout<<"\n"<<s[mid].id<<"\t"<<s[mid].name<<"\t"<<s[mid].cgpa;
+    }
+    else{
+        cout<<"\nStudent record not found";
+    }
+}
+
+void expand(){
+    s=(struct Student *)realloc(s,(n+1)*sizeof(Student));
+    cout<<"Enter id, name, cgpa: ";
+    cin>>s[n].id>>s[n].name>>s[n].cgpa;
+    n++;
+    cout<<"Record added...";
+}
+
+void bubble(){
+    for(int i=0;i<n-1;i++){
+        for(int j=0;j<n-1-i;j++){
+            if(strcmp(s[j].name,s[j+1].name)>0){
+                struct Student temp=s[j];
+                s[j]=s[j+1];
+                s[j+1]=temp;
+            }
+        }
+    }
+    cout<<"\nRecord sorted by Name.";
+    display();
+}
+
+void selection(){
+    int i,j,m;
+    for(i=0;i<n-1;i++){
+        m=i;
+        for(j=i+1;j<n;j++){
+            if(s[j].cgpa<s[m].cgpa){
+                m=j;
+            }
+        }
+        if(m!=i){
+            struct Student temp=s[i];
+            s[i]=s[m];
+            s[m]=temp;
+        }
+    }
+    cout<<"\nRecord sorted by CGPA (Selection Sort):";
+    display();
+}
+
+void insertion(){
+    struct Student temp;
+    for(int i=1;i<n;i++){
+        temp=s[i];
+        int j=i-1;
+        while(j>=0 && s[j].cgpa>temp.cgpa){
+            s[j+1]=s[j];
+            j=j-1;
+        }
+        s[j+1]=temp;
+    }
+    cout<<"\nRecord sorted by CGPA (Insertion Sort):";
+    display();
+}
+
+int main(){
+    int choice, keyid;
+    do{
+        cout<<"\n\nMenu:";
+        cout<<"\n1. Enter Data";
+        cout<<"\n2. Display Data";
+        cout<<"\n3. Linear Search";
+        cout<<"\n4. Binary Search";
+        cout<<"\n5. Expand Record";
+        cout<<"\n6. Bubble Sort (by Name)";
+        cout<<"\n7. Selection Sort (by CGPA)";
+        cout<<"\n8. Insertion Sort (by CGPA)";
+        cout<<"\n9. Exit";
+        cout<<"\nEnter your choice: ";
+        cin>>choice;
+
+        switch(choice){
+            case 1: getdata(); break;
+            case 2: display(); break;
+            case 3:
+                cout<<"Enter ID to search (Linear): ";
+                cin>>keyid;
+                linear(keyid);
+                break;
+            case 4:
+                cout<<"Enter ID to search (Binary): ";
+                cin>>keyid;
+                binary(keyid);
+                break;
+            case 5: expand(); break;
+            case 6: bubble(); break;
+            case 7: selection(); break;
+            case 8: insertion(); break;
+            case 9: cout<<"Exiting..."; break;
+            default: cout<<"Invalid choice!";
+        }
+    } while(choice != 9);
+
+    free(s);
+    return 0;
+}
