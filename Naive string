@@ -1,0 +1,20 @@
+#Naive String matching algorithm
+def naive():
+    t = input("\nEnter text: ")
+    p = input("\nEnter pattern: ")
+
+    n = len(t)
+    m = len(p)
+
+    for s in range(n - m + 1):      # shift from 0 to n-m
+        for j in range(m):
+            if p[j] != t[s + j]:
+                break
+            if j == m - 1:          # full match
+                print(f"\nPattern found at {s} location")
+                return
+
+    print("\nPattern not found.")
+
+if __name__ == "__main__":
+    naive()
