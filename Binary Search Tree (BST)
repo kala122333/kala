@@ -1,0 +1,304 @@
+
+#  Binary Search Tree (BST) Implementation
+
+
+# Node class to represent each node in the BST
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
+
+
+
+# BST Class with All Operations
+
+class BST:
+    def __init__(self):
+        self.root = None
+        self.loc = None
+        self.par = None
+
+
+
+    #  INSERTION (Create BST)
+
+    def create_bst(self, x):
+        newnode = Node(x)
+        if self.root is None:
+            self.root = newnode
+            return
+        ptr = self.root
+        parent = None
+        while ptr is not None:
+            parent = ptr
+            if x > ptr.data:
+                ptr = ptr.right
+            else:
+                ptr = ptr.left
+        if x > parent.data:
+            parent.right = newnode
+        else:
+            parent.left = newnode
+
+
+  
+    #  DELETION CASE A (0 or 1 Child)
+  
+    def casea(self, loc, par):
+        if loc.left is None and loc.right is None:
+            child = None
+        elif loc.left is not None:
+            child = loc.left
+        else:
+            child = loc.right
+
+        if par is not None:
+            if loc == par.left:
+                par.left = child
+            else:
+                par.right = child
+        else:
+            self.root = child
+
+
+   
+    #  DELETION CASE B (2 Children)
+    
+    def caseb(self):
+        ptr = self.loc.right
+        save = self.loc
+        while ptr.left is not None:
+            save = ptr
+            ptr = ptr.left
+        suc = ptr
+        parsuc = save
+
+        self.casea(suc, parsuc)
+
+        if self.par is not None:
+            if self.loc == self.par.left:
+                self.par.left = suc
+            else:
+                self.par.right = suc
+        else:
+            self.root = suc
+
+        suc.left = self.loc.left
+        suc.right = self.loc.right
+
+
+ 
+    #  DELETE NODE
+
+    def deleteNode(self, x):
+        self.loc = self.root
+        self.par = None
+        while self.loc is not None and x != self.loc.data:
+            self.par = self.loc
+            if x < self.loc.data:
+                self.loc = self.loc.left
+            else:
+                self.loc = self.loc.right
+
+        if self.loc is None:
+            print("Not found")
+            return
+
+        if self.loc.left is not None and self.loc.right is not None:
+            self.caseb()
+        else:
+            self.casea(self.loc, self.par)
+
+        del self.loc
+
+
+ 
+    # SEARCH NODE
+    
+    def search(self, x):
+        if self.root is None:
+            print("Tree is empty")
+            return
+        ptr = self.root
+        while ptr is not None:
+            if ptr.data == x:
+                print(f"{x} is found")
+                return
+            elif x < ptr.data:
+                ptr = ptr.left
+            else:
+                ptr = ptr.right
+        print(f"{x} is not found")
+
+
+   
+    # DEPTH OF TREE
+   
+    def depth(self, ptr):
+        if ptr is None:
+            return 0
+        lh = self.depth(ptr.left)
+        rh = self.depth(ptr.right)
+        return max(lh, rh) + 1
+
+
+    
+    # TRAVERSALS (Inorder / Preorder / Postorder)
+  
+    def inorder(self, ptr):
+        if ptr is not None:
+            self.inorder(ptr.left)
+            print(ptr.data, end=" ")
+            self.inorder(ptr.right)
+
+    def preorder(self, ptr):
+        if ptr is not None:
+            print(ptr.data, end=" ")
+            self.preorder(ptr.left)
+            self.preorder(ptr.right)
+
+    def postorder(self, ptr):
+        if ptr is not None:
+            self.postorder(ptr.left)
+            self.postorder(ptr.right)
+            print(ptr.data, end=" ")
+
+
+  
+    #  DISPLAY LEAF NODES
+  
+    def printleafNode(self, ptr):
+        if ptr is None:
+            return
+        if ptr.left is None and ptr.right is None:
+            print(ptr.data, end=" ")
+            return
+        if ptr.left:
+            self.printleafNode(ptr.left)
+        if ptr.right:
+            self.printleafNode(ptr.right)
+
+
+
+    # MIRROR IMAGE OF TREE
+ 
+    def mirror_tree(self, ptr):
+        if ptr is not None:
+            ptr.left, ptr.right = ptr.right, ptr.left
+            self.mirror_tree(ptr.left)
+            self.mirror_tree(ptr.right)
+        else:
+            return
+
+
+  
+    # CREATE COPY OF BST
+   
+    def copy_tree(self, ptr):
+        if ptr is None:
+            return None
+        newnode = Node(ptr.data)
+        newnode.left = self.copy_tree(ptr.left)
+        newnode.right = self.copy_tree(ptr.right)
+        return newnode
+
+
+
+    #  LEVEL-WISE (BFS) TRAVERSAL
+ 
+    def level_wise_traversal(self):
+        if self.root is None:
+            print("Tree is empty")
+            return
+        queue = [self.root]
+        while queue:
+            current = queue.pop(0)
+            print(current.data, end=" ")
+            if current.left:
+                queue.append(current.left)
+            if current.right:
+                queue.append(current.right)
+
+
+
+#  MAIN FUNCTION (MENU DRIVEN)
+
+def main():
+    t = BST()
+    while True:
+        print("\n====== Binary Search Tree Menu ======")
+        print("1. Insert")
+        print("2. Delete")
+        print("3. Search")
+        print("4. Traversals (Inorder/Preorder/Postorder)")
+        print("5. Display Leaf Nodes")
+        print("6. Level-wise Traversal")
+        print("7. Create Copy of BST")
+        print("8. Display Depth of Tree")
+        print("9. Display Mirror Image")
+        print("10. Exit")
+
+        ch = int(input("Enter your choice: "))
+
+        if ch == 1:
+            x = int(input("Enter data to insert: "))
+            t.create_bst(x)
+
+        elif ch == 2:
+            x = int(input("Enter data to delete: "))
+            t.deleteNode(x)
+
+        elif ch == 3:
+            x = int(input("Enter data to search: "))
+            t.search(x)
+
+        elif ch == 4:
+            print("\nInorder Traversal: ", end="")
+            t.inorder(t.root)
+            print("\nPreorder Traversal: ", end="")
+            t.preorder(t.root)
+            print("\nPostorder Traversal: ", end="")
+            t.postorder(t.root)
+            print()
+
+        elif ch == 5:
+            print("Leaf Nodes: ", end="")
+            t.printleafNode(t.root)
+            print()
+
+        elif ch == 6:
+            print("Level-wise Traversal: ", end="")
+            t.level_wise_traversal()
+            print()
+
+        elif ch == 7:
+            print("Copy of BST created successfully!")
+            copy_root = t.copy_tree(t.root)
+            print("Inorder traversal of copied tree: ", end="")
+            t.inorder(copy_root)
+            print()
+
+        elif ch == 8:
+            print(f"Depth of tree: {t.depth(t.root)}")
+
+        elif ch == 9:
+            t.mirror_tree(t.root)
+            print("Mirror image created successfully!")
+            print("Inorder traversal of mirrored tree: ", end="")
+            t.inorder(t.root)
+            print()
+
+        elif ch == 10:
+            print("Exiting program...")
+            break
+
+        else:
+            print("Invalid choice! Try again.")
+
+
+
+#  RUN THE PROGRAM
+
+if __name__ == "__main__":
+    main()
